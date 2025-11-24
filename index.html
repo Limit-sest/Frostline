@@ -10,6 +10,11 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();
+      var button = document.getElementById("hello");
+
+      button.addEventListener("click", function (e) {
+        socket.emit("hello", "hello from a client");
+      });
     </script>
   </body>
 </html>
