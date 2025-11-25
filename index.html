@@ -31,22 +31,49 @@
       }
       .icons button {
         border-radius: 0px;
+        display: flex;
+        justify-items: center;
+        align-items: center;
+        padding: 4px;
+        cursor: pointer;
+        background-color: hsl(0 0 90);
+        border-color: hsl(0 0 70) hsl(0 0 50) hsl(0 0 70) hsl(0 0 50);
       }
+
+      .icons button:hover {
+        background-color: hsl(0 0 80);
+        border-color: hsl(0 0 60) hsl(0 0 40) hsl(0 0 60) hsl(0 0 40);
+      }
+
+      .icons button.active {
+        background-color: hsl(0 0 70);
+        border-color: hsl(0 0 30) hsl(0 0 50) hsl(0 0 30) hsl(0 0 50);
+      }
+
       .icons button img {
         image-rendering: pixelated;
         width: 32px;
         height: 32px;
+      }
+      .divider {
+        height: 44px;
+        border-left: solid dimgray 2px;
+        margin: 0px 4px;
       }
     </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
     <div class="icons">
-      <button id="pen"><img src="/assets/pen.png" alt="" /></button>
+      <button id="pen" class="active">
+        <img src="/assets/pen.png" alt="" />
+      </button>
       <button id="rubber"><img src="/assets/rubber.png" alt="" /></button>
+      <div class="divider"></div>
       <button id="size1"><img src="/assets/size1.png" alt="" /></button>
       <button id="size2"><img src="/assets/size2.png" alt="" /></button>
       <button id="size3"><img src="/assets/size3.png" alt="" /></button>
+      <div class="divider"></div>
       <button id="color"><img src="/assets/color.png" alt="" /></button>
     </div>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
