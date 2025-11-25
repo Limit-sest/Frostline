@@ -27,9 +27,9 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
-      const socket = io();
+      const socket = io("localhost:3000");
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       let drawBuffer = [];

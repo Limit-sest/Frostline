@@ -1,11 +1,16 @@
 import express from "express";
-const app = express();
 import http from "http";
-const server = http.createServer(app);
 import { Server } from "socket.io";
-const io = new Server(server);
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173"],
+  },
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
