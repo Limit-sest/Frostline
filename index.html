@@ -56,6 +56,10 @@
         };
       }
 
+      socket.on("message", (data) => {
+        console.log("MESSAGE RECEIVED:", data);
+      });
+
       socket.on("draw", (data) => {
         drawPixelLine(data.lastX, data.lastY, data.pos.x, data.pos.y);
       });
