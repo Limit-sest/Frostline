@@ -23,10 +23,32 @@
         image-rendering: crisp-edges;
         border: solid 2px black;
       }
+
+      .icons {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+      }
+      .icons button {
+        border-radius: 0px;
+      }
+      .icons button img {
+        image-rendering: pixelated;
+        width: 32px;
+        height: 32px;
+      }
     </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <div class="icons">
+      <button id="pen"><img src="/assets/pen.png" alt="" /></button>
+      <button id="rubber"><img src="/assets/rubber.png" alt="" /></button>
+      <button id="size1"><img src="/assets/size1.png" alt="" /></button>
+      <button id="size2"><img src="/assets/size2.png" alt="" /></button>
+      <button id="size3"><img src="/assets/size3.png" alt="" /></button>
+      <button id="color"><img src="/assets/color.png" alt="" /></button>
+    </div>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
       const socket = io("localhost:3000");
@@ -149,6 +171,17 @@
       canvas.addEventListener("mousemove", draw);
       canvas.addEventListener("mouseup", stopDrawing);
       canvas.addEventListener("mouseout", stopDrawing);
+
+      // TOOLS
+      const pen = document.getElementById("pen");
+      const rubber = document.getElementById("rubber");
+
+      pen.addEventListener("click", () => {
+        currentColor = 0;
+      });
+      rubber.addEventListener("click", () => {
+        currentColor = -1;
+      });
     </script>
   </body>
 </html>
