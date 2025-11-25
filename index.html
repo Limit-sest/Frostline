@@ -199,15 +199,52 @@
       canvas.addEventListener("mouseup", stopDrawing);
       canvas.addEventListener("mouseout", stopDrawing);
 
-      // TOOLS
+      // TOOLBAR
       const pen = document.getElementById("pen");
       const rubber = document.getElementById("rubber");
+      const size1 = document.getElementById("size1");
+      const size2 = document.getElementById("size2");
+      const size3 = document.getElementById("size3");
+
+      const tools = [pen, rubber];
+      const sizes = [size1, size2, size3];
+
+      function resetActive(group) {
+        group.forEach((element) => {
+          element.classList.remove("active");
+          element.disabled = false;
+        });
+      }
 
       pen.addEventListener("click", () => {
         currentColor = 0;
+        resetActive(tools);
+        pen.classList.add("active");
+        pen.disabled = true;
       });
       rubber.addEventListener("click", () => {
         currentColor = -1;
+        resetActive(tools);
+        rubber.classList.add("active");
+        rubber.disabled = true;
+      });
+      size1.addEventListener("click", () => {
+        currentColor = -1;
+        resetActive(sizes);
+        size1.classList.add("active");
+        size1.disabled = true;
+      });
+      size2.addEventListener("click", () => {
+        currentColor = -1;
+        resetActive(sizes);
+        size2.classList.add("active");
+        size2.disabled = true;
+      });
+      size3.addEventListener("click", () => {
+        currentColor = -1;
+        resetActive(sizes);
+        size3.classList.add("active");
+        size3.disabled = true;
       });
     </script>
   </body>
