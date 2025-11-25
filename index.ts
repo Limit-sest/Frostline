@@ -10,29 +10,23 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const state = createArray(200, 200);
-
-function createArray(length: number): any[];
-function createArray(length: number, arg1: number, ...rest: number[]): any[];
-function createArray(length: any): any[] {
-  var arr = new Array(length || 0),
-    i = length;
-
-  if (arguments.length > 1) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    while (i--) arr[length - 1 - i] = createArray.apply(this, args);
-  }
-
-  return arr;
-}
+const state = new Map<number, boolean>();
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
 io.on("connection", (socket) => {
+  const filledPixels = Array.from(state.entries())
+    .filter(([key, value]) => value) // filter out false values
+    .map(([key, value]) => ({
+      x: key % 200,
+      y: Math.floor(key / 200),
+    }));
+  socket.emit("sync", filledPixels);
   socket.on("draw", (data) => {
-    socket.emit("message", "this is a test");
+    const key = data.y * 200 + data.x; // encode coords into a single number as a key for the state
+    state.set(key, true);
     socket.broadcast.emit("draw", data);
   });
 });

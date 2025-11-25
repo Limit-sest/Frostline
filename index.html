@@ -61,8 +61,10 @@
         };
       }
 
-      socket.on("message", (data) => {
-        console.log("MESSAGE RECEIVED:", data);
+      socket.on("sync", (data) => {
+        data.forEach((pixel) => {
+          ctx.fillRect(pixel.x, pixel.y, 1, 1);
+        });
       });
 
       socket.on("draw", (data) => {
