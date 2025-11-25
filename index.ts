@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   socket.on("draw", (data) => {
     socket.emit("message", "this is a test");
-    io.emit("draw", data);
+    socket.broadcast.emit("draw", data);
   });
 });
 
