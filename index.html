@@ -32,6 +32,8 @@
       const socket = io();
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
+      let sendBuffer = []
+      let willSendBuffer = false;
 
       const RESOLUTION = 200;
       canvas.width = RESOLUTION;
@@ -46,7 +48,17 @@
 
       function drawPixel(x, y) {
         ctx.fillRect(x, y, 1, 1);
-        socket.emit("draw", { x: x, y: y });
+        sendBuffer.push({ x: x, y: y })
+        if (!willSendBuffer) {
+          willSendBuffer = true;
+          setTimeout(sendBuffer; 32)
+        }
+      }
+
+      function sendBuffer(){
+        willSendBuffer = false
+        socket.emit("drawBatch", sendBuffer);
+        sendBuffer = []
       }
 
       function getMousePos(evt) {
@@ -68,7 +80,14 @@
       });
 
       socket.on("draw", (data) => {
-        drawPixel(data.x, data.y);
+        ctx.fillRect(data.x, data.y, 1, 1);
+      });
+
+      socket.on("drawBatch", (data) => {
+        data.forEach((pixel) => {
+
+          ctx.fillRect(data.x, data.y, 1, 1);
+        })
       });
 
       function drawPixelLine(x0, y0, x1, y1) {

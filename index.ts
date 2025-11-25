@@ -29,6 +29,14 @@ io.on("connection", (socket) => {
     state.set(key, true);
     socket.broadcast.emit("draw", data);
   });
+
+  socket.on("drawBatch", (pixels) => {
+    pixels.forEach((data) => {
+      const key = data.y * 200 + data.x;
+      state.set(key, true);
+    });
+    socket.broadcast.emit("drawBatch", pixels);
+  });
 });
 
 server.listen(3000, () => {
