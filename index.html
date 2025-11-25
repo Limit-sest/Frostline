@@ -29,6 +29,7 @@
     <canvas id="canvas"></canvas>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+      const socket = io();
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
@@ -54,6 +55,10 @@
           y: Math.floor((evt.clientY - rect.top) * scaleY),
         };
       }
+
+      socket.on("draw", (data) => {
+        drawPixelLine(data.lastX, data.lastY, data.pos.x, data.pos.y);
+      });
 
       function drawPixelLine(x0, y0, x1, y1) {
         const dx = Math.abs(x1 - x0);
@@ -97,7 +102,7 @@
 
         const pos = getMousePos(e);
 
-        drawPixelLine(lastX, lastY, pos.x, pos.y);
+        socket.emit("draw", { lastX: lastX, lastY: lastY, pos: pos });
 
         lastX = pos.x;
         lastY = pos.y;
