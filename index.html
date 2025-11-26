@@ -40,6 +40,15 @@
         border-color: hsl(0 0 70) hsl(0 0 50) hsl(0 0 70) hsl(0 0 50);
       }
 
+      /*for color "icon"*/
+      .icons button > div {
+        width: 30px;
+        height: 30px;
+        border: solid black 3px;
+        box-sizing: border-box;
+        margin: 1px;
+      }
+
       .icons button:hover {
         background-color: hsl(0 0 80);
         border-color: hsl(0 0 60) hsl(0 0 40) hsl(0 0 60) hsl(0 0 40);
@@ -76,7 +85,18 @@
       <button id="size2"><img src="/assets/size2.png" alt="" /></button>
       <button id="size3"><img src="/assets/size3.png" alt="" /></button>
       <div class="divider"></div>
-      <button id="color"><img src="/assets/color.png" alt="" /></button>
+      <button class="color-btn">
+        <div style="background-color: #52357b"></div>
+      </button>
+      <button class="color-btn">
+        <div style="background-color: #5459ac"></div>
+      </button>
+      <button class="color-btn">
+        <div style="background-color: #648db3"></div>
+      </button>
+      <button class="color-btn">
+        <div style="background-color: #b2d8ce"></div>
+      </button>
     </div>
     <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script>
@@ -85,7 +105,7 @@
       const ctx = canvas.getContext("2d");
       let drawBuffer = [];
       let willSendBuffer = false;
-      const colors = ["#1A237E"];
+      const colors = ["#52357B", "#5459AC", "#648DB3", "#B2D8CE"];
       let currentColor = 0;
       let thickness = 1;
 
@@ -216,6 +236,7 @@
       const size2 = document.getElementById("size2");
       const size3 = document.getElementById("size3");
 
+      const colorButtons = document.querySelectorAll(".color-btn");
       const tools = [pen, rubber];
       const sizes = [size1, size2, size3];
 
@@ -229,12 +250,18 @@
       pen.addEventListener("click", () => {
         currentColor = 0;
         resetActive(tools);
+        colorButtons.forEach((button) => {
+          button.disabled = false;
+        });
         pen.classList.add("active");
         pen.disabled = true;
       });
       rubber.addEventListener("click", () => {
         currentColor = -1;
         resetActive(tools);
+        colorButtons.forEach((button) => {
+          button.disabled = true;
+        });
         rubber.classList.add("active");
         rubber.disabled = true;
       });
@@ -255,6 +282,16 @@
         resetActive(sizes);
         size3.classList.add("active");
         size3.disabled = true;
+      });
+
+      colorButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          currentColor = index;
+          ctx.fillStyle = colors[currentColor];
+          resetActive(colorButtons);
+          button.classList.add("active");
+          button.disabled = true;
+        });
       });
     </script>
   </body>
