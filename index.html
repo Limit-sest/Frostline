@@ -70,7 +70,9 @@
       </button>
       <button id="rubber"><img src="/assets/rubber.png" alt="" /></button>
       <div class="divider"></div>
-      <button id="size1"><img src="/assets/size1.png" alt="" /></button>
+      <button id="size1" class="active">
+        <img src="/assets/size1.png" alt="" />
+      </button>
       <button id="size2"><img src="/assets/size2.png" alt="" /></button>
       <button id="size3"><img src="/assets/size3.png" alt="" /></button>
       <div class="divider"></div>
@@ -85,6 +87,7 @@
       let willSendBuffer = false;
       const colors = ["#1A237E"];
       let currentColor = 0;
+      let thickness = 1;
 
       const RESOLUTION = 200;
       canvas.width = RESOLUTION;
@@ -154,9 +157,16 @@
         const sy = y0 < y1 ? 1 : -1;
         let err = dx - dy;
 
-        while (true) {
-          drawPixel(x0, y0, undefined, true);
+        const radius = Math.floor(thickness / 2);
 
+        while (true) {
+          for (let i = -radius; i <= radius; i++) {
+            if (dx > dy) {
+              drawPixel(x0, y0 + i, undefined, true);
+            } else {
+              drawPixel(x0 + i, y0, undefined, true);
+            }
+          }
           if (x0 === x1 && y0 === y1) break;
           const e2 = 2 * err;
           if (e2 > -dy) {
@@ -229,19 +239,19 @@
         rubber.disabled = true;
       });
       size1.addEventListener("click", () => {
-        currentColor = -1;
+        thickness = 1;
         resetActive(sizes);
         size1.classList.add("active");
         size1.disabled = true;
       });
       size2.addEventListener("click", () => {
-        currentColor = -1;
+        thickness = 2;
         resetActive(sizes);
         size2.classList.add("active");
         size2.disabled = true;
       });
       size3.addEventListener("click", () => {
-        currentColor = -1;
+        thickness = 4;
         resetActive(sizes);
         size3.classList.add("active");
         size3.disabled = true;
