@@ -80,6 +80,9 @@
       <button id="rubber" title="Rubber tool">
         <img src="/assets/rubber.png" alt="" />
       </button>
+      <button id="line" title="Line tool">
+        <img src="/assets/rubber.png" alt="" />
+      </button>
       <div class="divider"></div>
       <button id="size1" class="active" title="Set brush size">
         <img src="/assets/size1.png" alt="" />
@@ -113,6 +116,7 @@
       let willSendBuffer = false;
       const colors = ["#52357B", "#5459AC", "#648DB3", "#B2D8CE"];
       let currentColor = 0;
+      let activeTool = "pen";
       let thickness = 1;
 
       const RESOLUTION = 256;
@@ -176,7 +180,7 @@
         });
       });
 
-      function drawPixelLine(x0, y0, x1, y1) {
+      function drawPixelLine(x0, y0, x1, y1, emit = true) {
         const dx = Math.abs(x1 - x0);
         const dy = Math.abs(y1 - y0);
         const sx = x0 < x1 ? 1 : -1;
@@ -188,9 +192,9 @@
         while (true) {
           for (let i = -radius; i <= radius; i++) {
             if (dx > dy) {
-              drawPixel(x0, y0 + i, undefined, true);
+              drawPixel(x0, y0 + i, undefined, emit);
             } else {
-              drawPixel(x0 + i, y0, undefined, true);
+              drawPixel(x0 + i, y0, undefined, emit);
             }
           }
           if (x0 === x1 && y0 === y1) break;
@@ -224,10 +228,12 @@
         if (!isDrawing) return;
 
         const pos = getMousePos(e);
-        drawPixelLine(lastX, lastY, pos.x, pos.y);
+        drawPixelLine(lastX, lastY, pos.x, pos.y, activeTool !== "line");
 
-        lastX = pos.x;
-        lastY = pos.y;
+        if (activeTool !== "line") {
+          lastX = pos.x;
+          lastY = pos.y;
+        }
       }
 
       canvas.addEventListener("mousedown", startDrawing);
@@ -238,12 +244,13 @@
       // TOOLBAR
       const pen = document.getElementById("pen");
       const rubber = document.getElementById("rubber");
+      const line = document.getElementById("line");
       const size1 = document.getElementById("size1");
       const size2 = document.getElementById("size2");
       const size3 = document.getElementById("size3");
 
       const colorButtons = document.querySelectorAll(".color-btn");
-      const tools = [pen, rubber];
+      const tools = [pen, rubber, line];
       const sizes = [size1, size2, size3];
 
       function resetActive(group) {
@@ -255,6 +262,7 @@
 
       pen.addEventListener("click", () => {
         currentColor = 0;
+        activeTool = "pen";
         resetActive(tools);
         colorButtons.forEach((button) => {
           button.disabled = false;
@@ -264,12 +272,23 @@
       });
       rubber.addEventListener("click", () => {
         currentColor = -1;
+        activeTool = "rubber";
         resetActive(tools);
         colorButtons.forEach((button) => {
           button.disabled = true;
         });
         rubber.classList.add("active");
         rubber.disabled = true;
+      });
+      line.addEventListener("click", () => {
+        currentColor = 0;
+        activeTool = "line";
+        resetActive(tools);
+        colorButtons.forEach((button) => {
+          button.disabled = false;
+        });
+        line.classList.add("active");
+        line.disabled = true;
       });
       size1.addEventListener("click", () => {
         thickness = 1;
