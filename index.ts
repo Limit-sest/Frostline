@@ -24,7 +24,7 @@ interface DrawPixel {
 const state = new Map<number, number>();
 
 function savePixel(pixel: DrawPixel) {
-  const key = pixel.y * 200 + pixel.x; // encode coords into a single number as a key for the state
+  const key = pixel.y * 256 + pixel.x; // encode coords into a single number as a key for the state
   if (pixel.color == -1) {
     state.delete(key);
     return;
@@ -38,8 +38,8 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   const filledPixels = Array.from(state.entries()).map(([key, value]) => ({
-    x: key % 200,
-    y: Math.floor(key / 200),
+    x: key % 256,
+    y: Math.floor(key / 256),
     color: value,
   }));
   socket.emit("sync", filledPixels);
