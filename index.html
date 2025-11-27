@@ -118,6 +118,9 @@
       let currentColor = 0;
       let activeTool = "pen";
       let thickness = 1;
+      let lineStartX = 0;
+      let lineStartY = 0;
+      let previewImageData = null;
 
       const RESOLUTION = 256;
       canvas.width = RESOLUTION;
@@ -216,11 +219,28 @@
         lastX = pos.x;
         lastY = pos.y;
 
-        // Draw a single dot on click
-        drawPixel(pos.x, pos.y, undefined, true);
+        if (activeTool === "line") {
+          lineStartX = pos.x;
+          lineStartY = pos.y;
+          previewImageData = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height,
+          );
+        } else {
+          // Draw a single dot on click
+          drawPixel(pos.x, pos.y, undefined, true);
+        }
       }
 
-      function stopDrawing() {
+      function stopDrawing(e) {
+        if (isDrawing && activeTool === "line") {
+          const pos = getMousePos(e);
+          ctx.putImageData(previewImageData, 0, 0);
+          drawPixelLine(lineStartX, lineStartY, pos.x, pos.y, true);
+          previewImageData = null;
+        }
         isDrawing = false;
       }
 
@@ -228,9 +248,13 @@
         if (!isDrawing) return;
 
         const pos = getMousePos(e);
-        drawPixelLine(lastX, lastY, pos.x, pos.y, activeTool !== "line");
 
-        if (activeTool !== "line") {
+        if (activeTool === "line") {
+          ctx.putImageData(previewImageData, 0, 0);
+          drawPixelLine(lineStartX, lineStartY, pos.x, pos.y, false);
+        } else {
+          drawPixelLine(lastX, lastY, pos.x, pos.y, true);
+
           lastX = pos.x;
           lastY = pos.y;
         }
@@ -239,7 +263,9 @@
       canvas.addEventListener("mousedown", startDrawing);
       canvas.addEventListener("mousemove", draw);
       canvas.addEventListener("mouseup", stopDrawing);
-      canvas.addEventListener("mouseout", stopDrawing);
+      canvas.addEventListener("mouseout", () => {
+        isDrawing = false;
+      });
 
       // TOOLBAR
       const pen = document.getElementById("pen");
