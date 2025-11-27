@@ -83,6 +83,9 @@
       <button id="line" title="Line tool">
         <img src="/assets/line.png" alt="" />
       </button>
+      <button id="bucket" title="Bucket tool">
+        <img src="/assets/bucket.png" alt="" />
+      </button>
       <div class="divider"></div>
       <button id="size1" class="active" title="Set brush size">
         <img src="/assets/size1.png" alt="" />
@@ -213,9 +216,80 @@
         }
       }
 
+      function floodFill(startX, startY, targetColor) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = imageData.data;
+
+        const startIndex = (startY * canvas.width + startX) * 4;
+        const startR = pixels[startIndex];
+        const startG = pixels[startIndex + 1];
+        const startB = pixels[startIndex + 2];
+        const startA = pixels[startIndex + 3];
+
+        // Convert fill color to RGB
+        const fillColor = colors[targetColor];
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        tempCtx.fillStyle = fillColor;
+        tempCtx.fillRect(0, 0, 1, 1);
+        const fillData = tempCtx.getImageData(0, 0, 1, 1).data;
+
+        // if clicked same color return
+        if (
+          startR === fillData[0] &&
+          startG === fillData[1] &&
+          startB === fillData[2]
+        ) {
+          return;
+        }
+
+        const pixelsToFill = [];
+        const queue = [[startX, startY]];
+        const visited = new Set();
+
+        while (queue.length > 0) {
+          const [x, y] = queue.shift();
+          const key = `${x},${y}`;
+
+          if (visited.has(key)) continue;
+          if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height)
+            continue;
+
+          const index = (y * canvas.width + x) * 4;
+          const r = pixels[index];
+          const g = pixels[index + 1];
+          const b = pixels[index + 2];
+          const a = pixels[index + 3];
+
+          // Check if pixel matches target color
+          if (r !== startR || g !== startG || b !== startB || a !== startA)
+            continue;
+
+          visited.add(key);
+          pixelsToFill.push({ x, y, color: targetColor });
+
+          // Add neighbors to queue
+          queue.push([x + 1, y]);
+          queue.push([x - 1, y]);
+          queue.push([x, y + 1]);
+          queue.push([x, y - 1]);
+        }
+
+        // Draw all pixels
+        pixelsToFill.forEach((pixel) => {
+          drawPixel(pixel.x, pixel.y, pixel.color, true);
+        });
+      }
+
       function startDrawing(e) {
-        isDrawing = true;
         const pos = getMousePos(e);
+
+        if (activeTool === "bucket") {
+          floodFill(pos.x, pos.y, currentColor);
+          return;
+        }
+
+        isDrawing = true;
         lastX = pos.x;
         lastY = pos.y;
 
@@ -271,12 +345,13 @@
       const pen = document.getElementById("pen");
       const rubber = document.getElementById("rubber");
       const line = document.getElementById("line");
+      const bucket = document.getElementById("bucket");
       const size1 = document.getElementById("size1");
       const size2 = document.getElementById("size2");
       const size3 = document.getElementById("size3");
 
       const colorButtons = document.querySelectorAll(".color-btn");
-      const tools = [pen, rubber, line];
+      const tools = [pen, rubber, line, bucket];
       const sizes = [size1, size2, size3];
 
       function resetActive(group) {
@@ -315,6 +390,16 @@
         });
         line.classList.add("active");
         line.disabled = true;
+      });
+      bucket.addEventListener("click", () => {
+        currentColor = 0;
+        activeTool = "bucket";
+        resetActive(tools);
+        colorButtons.forEach((button) => {
+          button.disabled = false;
+        });
+        bucket.classList.add("active");
+        bucket.disabled = true;
       });
       size1.addEventListener("click", () => {
         thickness = 1;
