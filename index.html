@@ -43,7 +43,9 @@
         border: double;
         padding: 12px;
       }
-      .icons button {
+
+      .icons button,
+      .stickers button {
         border-radius: 0px;
         display: flex;
         justify-items: center;
@@ -68,12 +70,22 @@
         gap: 8px;
       }
 
-      .icons button:hover {
+      .stickers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        border: double;
+        padding: 12px;
+      }
+
+      .icons button:hover,
+      .stickers button:hover {
         background-color: hsl(0 0 80);
         border-color: hsl(0 0 60) hsl(0 0 40) hsl(0 0 60) hsl(0 0 40);
       }
 
-      .icons button.active {
+      .icons button.active,
+      .stickers button.active {
         background-color: hsl(0 0 70);
         border-color: hsl(0 0 30) hsl(0 0 50) hsl(0 0 30) hsl(0 0 50);
       }
@@ -82,6 +94,11 @@
         image-rendering: pixelated;
         width: 32px;
         height: 32px;
+      }
+      .stickers button img {
+        image-rendering: pixelated;
+        width: 64px;
+        height: 64px;
       }
 
       .sidebar {
@@ -142,6 +159,12 @@
               <div style="background-color: #ffffff"></div>
             </button>
           </div>
+        </div>
+        <div class="stickers">
+          <button><img src="assets/tree.png" alt="" /></button>
+          <button><img src="assets/present.png" alt="" /></button>
+          <button><img src="assets/snowflake.png" alt="" /></button>
+          <button><img src="assets/smile.png" alt="" /></button>
         </div>
         <aside>
           <p>
@@ -394,6 +417,7 @@
       const size3 = document.getElementById("size3");
 
       const colorButtons = document.querySelectorAll(".color-btn");
+      const stickerButtons = document.querySelectorAll(".stickers > button");
       const tools = [pen, rubber, line, bucket];
       const sizes = [size1, size2, size3];
 
@@ -408,6 +432,7 @@
         currentColor = 0;
         activeTool = "pen";
         resetActive(tools);
+        resetActive(stickerButtons);
         colorButtons.forEach((button) => {
           button.disabled = false;
         });
@@ -418,6 +443,7 @@
         currentColor = -1;
         activeTool = "rubber";
         resetActive(tools);
+        resetActive(stickerButtons);
         colorButtons.forEach((button) => {
           button.disabled = true;
         });
@@ -428,6 +454,7 @@
         currentColor = 0;
         activeTool = "line";
         resetActive(tools);
+        resetActive(stickerButtons);
         colorButtons.forEach((button) => {
           button.disabled = false;
         });
@@ -438,6 +465,7 @@
         currentColor = 0;
         activeTool = "bucket";
         resetActive(tools);
+        resetActive(stickerButtons);
         colorButtons.forEach((button) => {
           button.disabled = false;
         });
@@ -468,6 +496,16 @@
           currentColor = index;
           ctx.fillStyle = colors[currentColor];
           resetActive(colorButtons);
+          button.classList.add("active");
+          button.disabled = true;
+        });
+      });
+
+      stickerButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          activeTool = "sticker";
+          resetActive(tools);
+          resetActive(stickerButtons);
           button.classList.add("active");
           button.disabled = true;
         });
