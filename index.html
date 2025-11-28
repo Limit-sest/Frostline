@@ -141,6 +141,9 @@
             <button id="size3" title="Set brush size">
               <img src="/assets/size3.png" alt="" />
             </button>
+            <button id="size4" title="Set brush size">
+              <img src="/assets/size4.png" alt="" />
+            </button>
           </div>
           <div>
             <button class="color-btn active" title="Select color">
@@ -284,10 +287,10 @@
 
       function drawSticker(x, y, emit = true) {
         const img = new Image();
-        img.src = "assets/tree.png";
+        img.src = document.querySelector(".stickers .active img").src;
 
         img.onload = function () {
-          drawImagePixels(img, x, y, emit);
+          drawImagePixels(img, x - 16, y - 16, emit);
         };
       }
 
@@ -465,11 +468,12 @@
       const size1 = document.getElementById("size1");
       const size2 = document.getElementById("size2");
       const size3 = document.getElementById("size3");
+      const size4 = document.getElementById("size4");
 
       const colorButtons = document.querySelectorAll(".color-btn");
       const stickerButtons = document.querySelectorAll(".stickers > button");
       const tools = [pen, rubber, line, bucket];
-      const sizes = [size1, size2, size3];
+      const sizes = [size1, size2, size3, size4];
 
       function resetActive(group) {
         group.forEach((element) => {
@@ -523,22 +527,28 @@
         bucket.disabled = true;
       });
       size1.addEventListener("click", () => {
-        thickness = 1;
+        thickness = 2;
         resetActive(sizes);
         size1.classList.add("active");
         size1.disabled = true;
       });
       size2.addEventListener("click", () => {
-        thickness = 2;
+        thickness = 4;
         resetActive(sizes);
         size2.classList.add("active");
         size2.disabled = true;
       });
       size3.addEventListener("click", () => {
-        thickness = 4;
+        thickness = 8;
         resetActive(sizes);
         size3.classList.add("active");
         size3.disabled = true;
+      });
+      size4.addEventListener("click", () => {
+        thickness = 16;
+        resetActive(sizes);
+        size4.classList.add("active");
+        size4.disabled = true;
       });
 
       colorButtons.forEach((button, index) => {
