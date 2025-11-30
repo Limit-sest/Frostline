@@ -175,6 +175,7 @@
             draw with your friends or strangers here, on
             <a href="https://frostline.kucera.dev">frostline.kucera.dev</a>
           </p>
+          <p>Please be respectful.</p>
         </aside>
       </div>
     </main>
@@ -404,6 +405,11 @@
           return;
         }
 
+        if (activeTool === "sticker") {
+          drawSticker(pos.x, pos.y);
+          return;
+        }
+
         isDrawing = true;
         lastX = pos.x;
         lastY = pos.y;
@@ -431,9 +437,6 @@
           previewImageData = null;
         }
 
-        if (isDrawing && activeTool === "sticker") {
-          drawSticker(pos.x, pos.y);
-        }
         isDrawing = false;
       }
 
