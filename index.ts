@@ -8,12 +8,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://frostline.kucera.dev"],
   },
 });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Serve static assets from the assets directory
+app.use('/assets', express.static(__dirname + '/assets'));
 
 interface DrawPixel {
   x: number;
