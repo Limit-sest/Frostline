@@ -185,7 +185,7 @@
     </main>
     <script src="https://frostline.kucera.dev/socket.io/socket.io.js"></script>
     <script>
-      const socket = io("localhost:3000");
+      const socket = io();
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       let drawBuffer = [];
